@@ -13,4 +13,5 @@ public class UserDto {
     private String id;
     private String nickName;
     private String email;
+    private Boolean isAdmin;
 }
