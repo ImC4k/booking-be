@@ -20,8 +20,11 @@ public class User {
     private String id;
     private String nickName;
     private String email;
+    private Boolean isAdmin;
 
     private Date addedDate;
     private Date updatedDate;
     private String approvedBy;
+
+
 }
