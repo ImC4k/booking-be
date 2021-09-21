@@ -8,13 +8,14 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.el.MethodNotFoundException;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @CrossOrigin
 @RestController
 @RequestMapping("/api/users")
+@Slf4j
 public class UserController {
     private final HttpServletRequest request;
-    private final String requesterEmail;
 
     @Autowired
     private UserService userService;
@@ -23,7 +24,13 @@ public class UserController {
 
     public UserController(HttpServletRequest request) {
         this.request = request;
-        this.requesterEmail = userTokenService.getRequesterEmail(request);
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<User> getAllUsers() {
+        log.info("requester is {}", userTokenService.getRequesterEmail(request));
+        return userService.findAll();
     }
 
     @PostMapping
@@ -31,6 +38,7 @@ public class UserController {
     public User createUser(@RequestBody UserDto userDto) {
         String accept = request.getHeader("Accept");
         if (accept != null && (accept.contains("application/json") || accept.contains("*/*"))) {
+            String requesterEmail = userTokenService.getRequesterEmail(request);
             return userService.save(new User(userDto), userService.findByEmail(requesterEmail));
         }
         throw new MethodNotFoundException("Unsupported accept type");
